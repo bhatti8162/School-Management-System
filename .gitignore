@@ -1,0 +1,53 @@
+# ====================
+# Python
+# ====================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+*.dylib
+*.env
+.env/
+venv/
+ENV/
+env/
+*.log
+.idea/
+*.sqlite3
+
+# ====================
+# React / Vite
+# ====================
+node_modules/
+dist/
+*.local
+*.cache
+*.tsbuildinfo
+.vite/
+*.env.local
+*.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ====================
+# VSCode
+# ====================
+.vscode/
+.history/
+.settings/
+*.code-workspace
+
+# ====================
+# OS / System
+# ====================
+.DS_Store
+Thumbs.db
