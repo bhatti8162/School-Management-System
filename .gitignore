@@ -20,7 +20,7 @@ ENV/
 env/
 *.log
 .idea/
-*.sqlite3
+# *.sqlite3
 
 # ====================
 # React / Vite
