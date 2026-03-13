@@ -43,26 +43,27 @@ class StudentSummaryViewSet(ModelViewSet):
     def retrieve(self, request, name=None):
         student = Student.objects.get(name=name)
         
-
-        attendance = Attendance.objects.filter(student=student).values(
-            "date", "status"
-        )
-
-        results = Result.objects.filter(student=student).values(
-            "date","test_name","subject", "marks"
-        )
-
-        fees = Fee.objects.filter(student=student).values(
-            "month", "amount"
-        )
-
-        data = {
-            "student": student.name,
-            "admin": student.admin.name,
-            "class_name": student.class_name,
+        # Attendance
+        attendance = Attendance.objects.filter(student=student).values("date", "status")
+        
+        # Results
+        results = Result.objects.filter(student=student).values("date", "test_name", "subject", "marks")
+        
+        # Fees
+        fees = Fee.objects.filter(student=student).order_by("month")
+        fee_serializer = FeeSerializer(fees, many=True)
+        
+        # Upcoming months
+        upcoming_months = []
+        current_month = date.today().replace(day=1)
+        for i in range(1, 4):  # next 3 months
+            month_date = current_month.replace(month=current_month.month + i if current_month.month + i <= 12 else (current_month.month + i) % 12)
+            upcoming_months.append({"month": month_date, "amount": None})
+        
+        return Response({
+            "student": StudentSerializer(student).data,
             "attendance": list(attendance),
             "results": list(results),
-            "fees": list(fees),
-        }
-
-        return Response(data)
+            "fees": fee_serializer.data,
+            "upcoming_fees": upcoming_months
+        })

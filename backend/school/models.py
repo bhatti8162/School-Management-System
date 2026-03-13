@@ -26,9 +26,17 @@ class Student(models.Model):
         ("12", "12"),
     ]
 
+    gr_number = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    father_name = models.CharField(max_length=100)
+    father_chic = models.CharField(max_length=13)
+    family_name = models.CharField(max_length=100)
+    contact = models.CharField(max_length=11)
+    b_form = models.CharField(max_length=100)
+    age = models.CharField(max_length=100)
+    monthly_fee = models.DecimalField(max_digits=10, decimal_places=2)
     class_name = models.CharField(max_length=100, choices=CLASS_CHOICES, default="0")
+    admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -42,12 +50,44 @@ class Attendance(models.Model):
 
 class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    date = models.DateField(default="2026-03-10")
+    date = models.DateField(default="2000-03-10")
     test_name = models.CharField(max_length=100, default="Test")
     subject = models.CharField(max_length=100)
     marks = models.IntegerField()
 
 class Fee(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    amount = models.IntegerField()
-    month = models.CharField(max_length=20)
+    MONTH_FEE_CHOICES = [
+    ("January", "January"),
+    ("February", "February"),
+    ("March", "March"),
+    ("April", "April"),
+    ("May", "May"),
+    ("June", "June"),
+    ("July", "July"),
+    ("August", "August"),
+    ("September", "September"),
+    ("October", "October"),
+    ("November", "November"),
+    ("December", "December"),
+    ]
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="fees")
+    month = models.CharField(max_length=100, choices=MONTH_FEE_CHOICES, default="January")
+    paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    @property
+    def amount(self):
+        # Pull the student's fixed monthly fee
+        return self.student.monthly_fee
+
+    @property
+    def status(self):
+        if self.paid_amount >= self.amount:
+            return "Full Paid"
+        elif self.paid_amount > 0:
+            return "Partial Paid"
+        else:
+            return "Not Paid"
+
+    @property
+    def due_amount(self):
+        return self.amount - self.paid_amount

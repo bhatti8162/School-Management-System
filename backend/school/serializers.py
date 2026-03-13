@@ -68,7 +68,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
         
 
 class ResultSerializer(serializers.ModelSerializer):
-    student = serializers.CharField()
+    # Let DRF select student by ID
+    student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
 
     class Meta:
         model = Result
@@ -86,8 +87,14 @@ class ResultSerializer(serializers.ModelSerializer):
         return Result.objects.create(**validated_data)
 
 class FeeSerializer(serializers.ModelSerializer):
-    student = serializers.StringRelatedField()
+    # Let DRF select student by ID
+    student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
+    
+    # Read-only fields
+    amount = serializers.ReadOnlyField()      # pulls from student.monthly_fee
+    status = serializers.ReadOnlyField()
+    due_amount = serializers.ReadOnlyField()
+
     class Meta:
         model = Fee
-        fields = '__all__'
-
+        fields = ["student", "month", "amount", "paid_amount", "status", "due_amount"]
