@@ -1,19 +1,50 @@
 
-from rest_framework.response import Response
+
 from rest_framework.viewsets import ModelViewSet
-from .models import Admin, Student, Attendance, Result, Fee
+from .models import Admin
+from .models.parent_guardian import ParentGuardian
+from .models.student import Student
+from .models.attendance import Attendance
+from .models.admission import Admission
+from .models.teacher import Teacher
+from .models.result import Result
+from .models.fee import Fee
 from .serializers import (
     AdminSerializer,
-    StudentSerializer,
     AttendanceSerializer,
+    ParentGuardianSerializer,
+    StudentSerializer,
+    AdmissionSerializer,
+    TeacherSerializer,
     ResultSerializer,
-    FeeSerializer
+    FeeSerializer,
 )
+import datetime as date
 
 
 class AdminViewSet(ModelViewSet):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
+
+
+class ParentGuardianViewSet(ModelViewSet):
+    queryset = ParentGuardian.objects.all()
+    serializer_class = ParentGuardianSerializer
+
+
+class StudentViewSet(ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+
+class AdmissionViewSet(ModelViewSet):
+    queryset = Admission.objects.all()
+    serializer_class = AdmissionSerializer
+
+
+class TeacherViewSet(ModelViewSet):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
 
 
 class StudentViewSet(ModelViewSet):

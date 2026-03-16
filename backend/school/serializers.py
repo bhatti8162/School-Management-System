@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import Admin, Student, Attendance, Result, Fee
+from .models import Admin
+from .models.parent_guardian import ParentGuardian
+from .models.student import Student
+from .models.admission import Admission
+from .models.attendance import Attendance
+from .models.teacher import Teacher
+from .models.result import Result
+from .models.fee import Fee
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -7,65 +14,43 @@ class AdminSerializer(serializers.ModelSerializer):
         model = Admin
         fields = '__all__'
 
+class ParentGuardianSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParentGuardian
+        fields = '__all__'
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = '__all__'
+
 
 class StudentSerializer(serializers.ModelSerializer):
-    admin = serializers.CharField()  # accept name in POST
+    parent_guardian = ParentGuardianSerializer(read_only=True)
+    parent_guardian_id = serializers.PrimaryKeyRelatedField(
+        queryset=ParentGuardian.objects.all(), source='parent_guardian', write_only=True, required=False
+    )
 
     class Meta:
         model = Student
         fields = "__all__"
 
-    def create(self, validated_data):
-        admin_name = validated_data.pop("admin")
 
-        try:
-            admin = Admin.objects.get(name__iexact=admin_name)
-        except Admin.DoesNotExist:
-            raise serializers.ValidationError("Admin not found")
-
-        validated_data["admin"] = admin
-        return Student.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        # Handle admin field if present
-        admin_name = validated_data.pop("admin", None)
-        if admin_name:
-            try:
-                admin = Admin.objects.get(name__iexact=admin_name)
-            except Admin.DoesNotExist:
-                raise serializers.ValidationError("Admin not found")
-            instance.admin = admin
-
-        # Update other fields
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-        return instance
-
-
-class AttendanceSerializer(serializers.ModelSerializer):
-    student = serializers.CharField()  # Accept student name in POST
+class AdmissionSerializer(serializers.ModelSerializer):
+    student = StudentSerializer(read_only=True)
+    student_id = serializers.PrimaryKeyRelatedField(
+        queryset=Student.objects.all(), source='student', write_only=True
+    )
 
     class Meta:
-        model = Attendance
+        model = Admission
         fields = '__all__'
 
-    def create(self, validated_data):
-        # Pop the student name from validated data
-        student_name = validated_data.pop("student")
 
-        try:
-            # Find the student by name (case-insensitive)
-            student = Student.objects.get(name__iexact=student_name)
-        except Student.DoesNotExist:
-            raise serializers.ValidationError("Student not found")
-
-        # Assign the actual student object
-        validated_data["student"] = student
-
-        # Create and return the Attendance record
-        return Attendance.objects.create(**validated_data)
-        
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = '__all__'
 
 class ResultSerializer(serializers.ModelSerializer):
     # Let DRF select student by ID
