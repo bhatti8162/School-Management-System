@@ -5,6 +5,7 @@ from .views import (
     StudentViewSet,
     AttendanceViewSet,
     ResultViewSet,
+    ParentGuardianViewSet,
     FeeViewSet,
     StudentSummaryViewSet
 )
@@ -15,6 +16,7 @@ router.register(r'students', StudentViewSet)
 router.register(r'attendance', AttendanceViewSet)
 router.register(r'results', ResultViewSet)
 router.register(r'fees', FeeViewSet)
+router.register(r'parent-guardians', ParentGuardianViewSet)
 router.register(r'summary', StudentSummaryViewSet, basename='student-summary')
 
 urlpatterns = [

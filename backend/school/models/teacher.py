@@ -16,7 +16,7 @@ class Teacher(models.Model):
     qualification = models.CharField(max_length=100)
     experience = models.PositiveIntegerField(help_text="Years of experience")
     specialization = models.CharField(max_length=100, blank=True, null=True)
-    # photo = models.ImageField(upload_to='teachers/photos/', blank=True, null=True)
+    photo = models.ImageField(upload_to='teachers/photos/', blank=True, null=True)
     joining_date = models.DateField()
 
     def __str__(self):

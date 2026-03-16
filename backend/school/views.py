@@ -19,7 +19,7 @@ from .serializers import (
     ResultSerializer,
     FeeSerializer,
 )
-import datetime as date
+
 
 
 class AdminViewSet(ModelViewSet):

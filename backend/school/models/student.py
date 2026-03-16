@@ -18,7 +18,7 @@ class Student(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()
     age = models.PositiveIntegerField()
-    # photograph = models.ImageField(upload_to='students/photos/', blank=True, null=True)
+    photograph = models.ImageField(upload_to='students/photos/', blank=True, null=True)
     blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES, blank=True, null=True)
     nationality = models.CharField(max_length=50, blank=True, null=True)
     religion = models.CharField(max_length=50, blank=True, null=True)
