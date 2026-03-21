@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Admin
+from .models.school import School
 from .models.parent_guardian import ParentGuardian
 from .models.student import Student
 from .models.admission import Admission
@@ -27,23 +27,23 @@ class BaseSerializer(serializers.ModelSerializer):
         return data
 
 
-class AdminSerializer(BaseSerializer):
+class SchoolSerializer(BaseSerializer):
     class Meta:
-        model = Admin
+        model = School
         fields = '__all__'
 
 
 class ParentGuardianSerializer(BaseSerializer):
+    school_id = serializers.CharField(source="school.school_id", read_only=True) 
+
     class Meta:
         model = ParentGuardian
         fields = '__all__'
 
 
 class StudentSerializer(BaseSerializer):
-    parent_guardian = ParentGuardianSerializer(read_only=True)
-    parent_guardian_id = serializers.PrimaryKeyRelatedField(
-        queryset=ParentGuardian.objects.all(), source='parent_guardian', write_only=True, required=False
-    )
+    family_id = serializers.CharField(source="parent_guardian.family_id",read_only=True)
+    school_id = serializers.CharField(source="parent_guardian.school.school_id", read_only=True) 
 
     class Meta:
         model = Student
@@ -51,11 +51,8 @@ class StudentSerializer(BaseSerializer):
 
 
 class AdmissionSerializer(BaseSerializer):
-    student = StudentSerializer(read_only=True)
-    student_id = serializers.PrimaryKeyRelatedField(
-        queryset=Student.objects.all(), source='student', write_only=True
-    )
-
+    student = serializers.CharField(source="Student.GR_id",read_only=True)
+    name = serializers.CharField(source="Student.name",read_only=True)
     class Meta:
         model = Admission
         fields = '__all__'

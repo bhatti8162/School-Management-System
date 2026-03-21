@@ -7,5 +7,6 @@ from .teacher import Teacher
 from .attendance import Attendance
 from .result import Result
 from .fee import Fee
-from .admin import Admin
+from .school import School
+from .userprofile import UserProfile
 

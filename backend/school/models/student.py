@@ -1,5 +1,6 @@
 from django.db import models
 from .parent_guardian import ParentGuardian
+from .school import School
 
 class Student(models.Model):
     GENDER_CHOICES = [
@@ -12,9 +13,16 @@ class Student(models.Model):
         ("O+", "O+"), ("O-", "O-"), ("AB+", "AB+"), ("AB-", "AB-")
     ]
 
-    student_id = models.CharField(max_length=50, unique=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    GR_id = models.CharField(max_length=50, unique=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True, related_name="students")
+    parent_guardian = models.ForeignKey(
+        ParentGuardian,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="students"
+    )
+    name = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()
     age = models.PositiveIntegerField()
@@ -27,7 +35,6 @@ class Student(models.Model):
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     postal_code = models.CharField(max_length=20)
-    parent_guardian = models.ForeignKey(ParentGuardian, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.name}"

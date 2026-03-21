@@ -1,23 +1,27 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    AdminViewSet,
+    SchoolViewSet,
     StudentViewSet,
+    AdmissionViewSet,
     AttendanceViewSet,
     ResultViewSet,
     ParentGuardianViewSet,
     FeeViewSet,
-    StudentSummaryViewSet
+    StudentSummaryViewSet,
+    UniversalSearchViewSet
 )
 
 router = DefaultRouter()
-router.register(r'admins', AdminViewSet)
-router.register(r'students', StudentViewSet)
+router.register(r'school', SchoolViewSet, basename='school')
+router.register(r'family', ParentGuardianViewSet, basename='family')
+router.register(r'students', StudentViewSet, basename='student')
+router.register(r'admission', AdmissionViewSet)
 router.register(r'attendance', AttendanceViewSet)
 router.register(r'results', ResultViewSet)
 router.register(r'fees', FeeViewSet)
-router.register(r'parent-guardians', ParentGuardianViewSet)
 router.register(r'summary', StudentSummaryViewSet, basename='student-summary')
+router.register(r'search', UniversalSearchViewSet, basename='universal-search')
 
 urlpatterns = [
     path('', include(router.urls)),
