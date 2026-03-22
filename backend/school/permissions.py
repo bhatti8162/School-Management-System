@@ -14,16 +14,17 @@ class IsSuperAdminOrAssignedSchoolUser(BasePermission):
 
     def has_permission(self, request, view):
         # Must be authenticated and have a profile
-        if not request.user.is_authenticated or not hasattr(request.user, "profile"):
+        user = request.user
+        if not user.is_authenticated or not hasattr(user, "profile"):
             return False
 
-        profile = request.user.profile
+        profile = user.profile
 
         # Superadmin bypass: full access
         if profile.role == "superadmin":
             return True
 
-        # School users: check read-only if enforced
+        # School users
         if profile.role == "school":
             if not profile.school:
                 return False  # no school assigned
@@ -35,7 +36,8 @@ class IsSuperAdminOrAssignedSchoolUser(BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        profile = request.user.profile
+        user = request.user
+        profile = user.profile
 
         # Superadmin bypass: full access
         if profile.role == "superadmin":
@@ -51,7 +53,7 @@ class IsSuperAdminOrAssignedSchoolUser(BasePermission):
             if hasattr(obj, "school") and obj.school == user_school:
                 return True
 
-            # Object has 'school_id' field
+            # Object has 'school_id' field (integer)
             if hasattr(obj, "school_id") and obj.school_id == user_school.id:
                 return True
 

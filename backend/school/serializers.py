@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models.school import School
 from .models.parent_guardian import ParentGuardian
 from .models.student import Student
-from .models.admission import Admission
 from .models.teacher import Teacher
 from .models.result import Result
 from .models.fee import Fee
@@ -48,14 +47,6 @@ class StudentSerializer(BaseSerializer):
     class Meta:
         model = Student
         fields = "__all__"
-
-
-class AdmissionSerializer(BaseSerializer):
-    student = serializers.CharField(source="Student.GR_id",read_only=True)
-    name = serializers.CharField(source="Student.name",read_only=True)
-    class Meta:
-        model = Admission
-        fields = '__all__'
 
 
 class TeacherSerializer(BaseSerializer):

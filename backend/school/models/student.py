@@ -12,8 +12,14 @@ class Student(models.Model):
         ("A+", "A+"), ("A-", "A-"), ("B+", "B+"), ("B-", "B-"),
         ("O+", "O+"), ("O-", "O-"), ("AB+", "AB+"), ("AB-", "AB-")
     ]
+    STATUS_CHOICES = [
+        ("active", "Active"),
+        ("inactive", "Inactive"),
+        ("pending", "Pending"),
+        ("withdrawn", "Withdrawn"),
+    ]
 
-    GR_id = models.CharField(max_length=50, unique=True)
+    GR_Id = models.CharField(max_length=50, unique=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True, related_name="students")
     parent_guardian = models.ForeignKey(
         ParentGuardian,
@@ -35,6 +41,14 @@ class Student(models.Model):
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     postal_code = models.CharField(max_length=20)
+    admission_number = models.CharField(max_length=50, unique=True)
+    admission_date = models.DateField()
+    previous_school = models.CharField(max_length=100, blank=True, null=True)
+    transfer_certificate = models.FileField(upload_to='admissions/tc/', blank=True, null=True)
+    admission_class = models.CharField(max_length=50)
+    section = models.CharField(max_length=20)
+    academic_year = models.CharField(max_length=20)
+    admission_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
 
     def __str__(self):
         return f"{self.name}"

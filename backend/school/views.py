@@ -14,7 +14,6 @@ from .models.parent_guardian import ParentGuardian
 from .models.student import Student
 from .models.school import School
 from .models.attendance import Attendance
-from .models.admission import Admission
 from .models.teacher import Teacher
 from .models.result import Result
 from .models.fee import Fee
@@ -23,7 +22,6 @@ from .serializers import (
     AttendanceSerializer,
     ParentGuardianSerializer,
     StudentSerializer,
-    AdmissionSerializer,
     TeacherSerializer,
     ResultSerializer,
     FeeSerializer,
@@ -47,6 +45,7 @@ class SchoolViewSet(ModelViewSet):
 
         # If no school assigned, return empty queryset
         return School.objects.none()
+    
 
     @action(detail=False, methods=['get'])
     def me(self, request):
@@ -68,26 +67,27 @@ class SchoolViewSet(ModelViewSet):
         return Response(serializer.data)
 
 class ParentGuardianViewSet(ModelViewSet):
-    queryset = ParentGuardian.objects.all()
+    # queryset = ParentGuardian.objects.all()
+    permission_classes = [IsAuthenticated, IsSuperAdminOrAssignedSchoolUser ]
     serializer_class = ParentGuardianSerializer
     lookup_field = "family_id"
+
+    def get_queryset(self):
+        # Only return students from the user's assigned school
+        user_school = self.request.user.profile.school
+        return ParentGuardian.objects.filter(school=user_school)
 
 
 class StudentViewSet(ModelViewSet):
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated, IsSuperAdminOrAssignedSchoolUser ]
-    lookup_field = "GR_id"
+    read_only_fields = ["school"]
+    lookup_field = "GR_Id"
 
     def get_queryset(self):
         # Only return students from the user's assigned school
         user_school = self.request.user.profile.school
         return Student.objects.filter(school=user_school)
-
-
-class AdmissionViewSet(ModelViewSet):
-    queryset = Admission.objects.all()
-    serializer_class = AdmissionSerializer
-    lookup_field = "admission_number"
 
 
 class TeacherViewSet(ModelViewSet):
