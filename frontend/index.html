@@ -1,36 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Data Renderer</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        #output { white-space: pre-wrap; background: #f4f4f4; padding: 1em; border-radius: 5px; }
-        input, button { padding: 0.5em; margin: 0.5em 0; }
-    </style>
-</head>
-<body>
-    <h1>API Data Renderer</h1>
-    <label for="apiUrl">API URL:</label>
-    <input type="text" id="apiUrl" value="https://jsonplaceholder.typicode.com/todos/1" size="50">
-    <button onclick="fetchApiData()">Fetch Data</button>
-    <h2>Result:</h2>
-    <div id="output">No data yet.</div>
-    <script>
-        async function fetchApiData() {
-            const url = document.getElementById('apiUrl').value;
-            const output = document.getElementById('output');
-            output.textContent = 'Loading...';
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
-                const data = await response.json();
-                output.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                output.textContent = 'Error: ' + error.message;
-            }
-        }
-    </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
