@@ -1,0 +1,7 @@
+from .school_serializers import SchoolSerializer
+from .parent_guardian_serializers import ParentGuardianSerializer
+from .student_serializers import StudentSerializer
+from .teacher_serializers import TeacherSerializer
+from .attendance_serializers import AttendanceSerializer
+from .result_serializers import ResultSerializer
+from .fee_serializers import FeeSerializer

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Student from './component/Student'
+import Dashboard from './component/Dashboard'
 import Header from './component/Header'
 
 function App() {
@@ -7,8 +7,8 @@ function App() {
 
   return (
     <>
-      <Header />
-      <Student />
+      {/* <Header /> */}
+      <Dashboard />
     </>
   )
 }

@@ -8,7 +8,7 @@ from .views import (
     ParentGuardianViewSet,
     FeeViewSet,
     StudentSummaryViewSet,
-    UniversalSearchViewSet
+    UniversalSearchViewSet,
 )
 
 router = DefaultRouter()

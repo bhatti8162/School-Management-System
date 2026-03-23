@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from .models.school import School
-from .models.parent_guardian import ParentGuardian
-from .models.student import Student
-from .models.teacher import Teacher
-from .models.result import Result
-from .models.fee import Fee
-from .models.attendance import Attendance
+from ..models import (
+    School,
+    ParentGuardian,
+    Student,
+    Teacher,
+    Result,
+    Fee,
+    Attendance,
+)
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -47,7 +49,8 @@ class StudentSerializer(BaseSerializer):
 
     class Meta:
         model = Student
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ['id', 'parent_guardian', 'school'] 
 
 
 class TeacherSerializer(BaseSerializer):

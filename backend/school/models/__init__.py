@@ -1,11 +1,11 @@
 
 
-from .parent_guardian import ParentGuardian
-from .student import Student
-from .teacher import Teacher
-from .attendance import Attendance
-from .result import Result
-from .fee import Fee
-from .school import School
-from .userprofile import UserProfile
+from .parent_guardian import *
+from .student import * 
+from .teacher import * 
+from .attendance import * 
+from .result import * 
+from .fee import * 
+from .school import * 
+from .userprofile import * 
 
