@@ -1,0 +1,10 @@
+#StudentSaveBtn {
+    width: 150px;
+    height: 50px;
+
+    /* Center the text inside the button */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
