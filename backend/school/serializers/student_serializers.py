@@ -9,4 +9,4 @@ class StudentSerializer(BaseSerializer):
 
     class Meta:
         model = Student
-        exclude = ['id', 'parent_guardian', 'school'] 
+        exclude = ['id'] 

@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [form, setForm] = useState({});
   const [view, setView] = useState("list");
 
+  // --- Auth / Token handling ---
   const handleLogout = () => {
     localStorage.clear();
     setToken("");
@@ -65,14 +66,14 @@ export default function Dashboard() {
     return null;
   };
 
+  // --- Fetch helper with automatic token refresh ---
   const fetchWithAuth = async (url, options = {}) => {
     let access = localStorage.getItem("access");
     let res = await fetch(url, {
       ...options,
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access}`,
         ...options.headers,
+        Authorization: `Bearer ${access}`,
       },
     });
 
@@ -82,20 +83,26 @@ export default function Dashboard() {
       res = await fetch(url, {
         ...options,
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access}`,
           ...options.headers,
+          Authorization: `Bearer ${access}`,
         },
       });
     }
     return res.json();
   };
 
-  useEffect(() => {
+  // --- Load students ---
+  const refreshStudents = async () => {
     if (!token) return;
-    fetchWithAuth(API_URL).then(setStudents);
+    const data = await fetchWithAuth(API_URL);
+    setStudents(data);
+  };
+
+  useEffect(() => {
+    refreshStudents();
   }, [token]);
 
+  // --- Student selection / profile ---
   const handleSelect = (student) => {
     setSelected(student);
     setForm(student);
@@ -118,21 +125,22 @@ export default function Dashboard() {
         body: JSON.stringify(payload),
         headers: { "Content-Type": "application/json" },
       });
-      const updated = await fetchWithAuth(API_URL);
-      setStudents(updated);
+      refreshStudents();
       setView("list");
     } catch (err) {
       console.error("Update failed:", err);
     }
   };
 
-  if (!token) return (
-    <LoginForm
-      credentials={credentials}
-      setCredentials={setCredentials}
-      onLogin={handleLogin}
-    />
-  );
+  if (!token) {
+    return (
+      <LoginForm
+        credentials={credentials}
+        setCredentials={setCredentials}
+        onLogin={handleLogin}
+      />
+    );
+  }
 
   return (
     <>
@@ -143,7 +151,9 @@ export default function Dashboard() {
             <StudentList
               students={students}
               selected={selected}
-              onSelect={handleSelect}
+              onSelect={setSelected}
+              onImport={refreshStudents}
+              authToken={token} // pass token to StudentList
             />
           )}
           {view === "profile" && selected && (
