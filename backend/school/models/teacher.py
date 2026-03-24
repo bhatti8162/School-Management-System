@@ -6,7 +6,7 @@ class Teacher(models.Model):
         ("F", "Female"),
         ("O", "Other"),
     ]
-    teacher_id = models.CharField(max_length=50, unique=True)
+    teacher_id = models.CharField(max_length=50, primary_key=True)
     name = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()

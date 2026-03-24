@@ -1,17 +1,19 @@
-/* ===== DESIGN TOKENS (THEME CORE) ===== */
+/* ===== DESIGN TOKENS ===== */
 :root {
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-success: #10b981;
-  --color-success-dark: #059669;
-  --color-bg: #f4f7fb;
+  --color-bg: #f5f6fa;
   --color-surface: #ffffff;
-  --color-border: #e5e7eb;
   --color-text: #1f2937;
   --color-muted: #6b7280;
-
+  --color-primary: #4f46e5;
+  --color-primary-dark: #4338ca;
+  --color-accent: #2563eb;
+  --color-success: #10b981;
+  --color-success-dark: #059669;
+  --color-border: #d1d5db;
   --radius: 8px;
-  --shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  --space: 16px;
+  --shadow-light: 0 2px 6px rgba(0,0,0,0.08);
+  --shadow-heavy: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 /* ===== RESET ===== */
@@ -19,233 +21,164 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
   background: var(--color-bg);
   color: var(--color-text);
+  padding: var(--space);
+  line-height: 1.5;
 }
 
-/* ===== APP LAYOUT ===== */
-.app {
-  min-height: 100vh;
-}
+/* ===== TYPOGRAPHY ===== */
+h1 { font-size: clamp(22px, 3vw, 28px); }
+h2 { font-size: clamp(18px, 2.5vw, 24px); }
+h3 { font-size: clamp(16px, 2vw, 20px); }
+h1, h2, h3 { color: var(--color-primary); margin-bottom: 12px; }
+p { color: var(--color-muted); font-size: clamp(14px, 1.5vw, 15px); }
 
-/* ===== HEADER ===== */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  z-index: 1000;
-  box-shadow: var(--shadow);
-}
+/* ===== LINKS ===== */
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-header button {
-  padding: 6px 14px;
+/* ===== BUTTONS ===== */
+button {
+  padding: 10px 16px;
   border-radius: var(--radius);
   border: none;
   background: var(--color-primary);
-  color: white;
-  font-weight: 600;
+  color: #fff;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--shadow-light);
 }
-
-header button:hover {
+button:hover {
   background: var(--color-primary-dark);
+  transform: scale(1.03);
+  box-shadow: var(--shadow-heavy);
 }
-
-/* ===== MAIN CONTAINER ===== */
-main {
-  padding: 80px 20px 20px;
-  width: 100%;
-}
-
-/* ===== DASHBOARD ===== */
-.dashboard {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-/* LEFT PANEL */
-.dashboard > section:first-child {
-  flex: 1 1 300px;
-}
-
-/* RIGHT PANEL */
-.dashboard > section:last-child {
-  flex: 2 1 400px;
-}
-
-/* ===== CARD / LIST ITEMS ===== */
-section > div {
-  border: 1px solid var(--color-border);
-  margin-bottom: 10px;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: var(--radius);
-  transition: 0.2s;
-  background: var(--color-surface);
-}
-
-section > div:hover {
-  border-color: var(--color-primary);
-  background: #eff6ff;
-}
-
-/* ===== HORIZONTAL DASHBOARD PROFILE FORM ===== */
-section form {
-  display: flex;
-  flex-wrap: wrap; /* allow items to flow */
-  gap: 24px;
-  padding: 20px;
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  box-shadow: var(--shadow);
-}
-
-/* Each field container */
-section form > div {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 180px;
-}
-
-/* Labels */
-section form label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-muted);
-  letter-spacing: 0.5px;
-}
-
-/* Inputs */
-section form input {
-  padding: 10px;
-  width: 220px;
-  border-radius: var(--radius);
-  border: 1px solid var(--color-border);
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-section form input:focus {
-  border-color: var(--color-primary);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
-
-/* Buttons */
-section form button {
-  padding: 10px 20px;
-  border-radius: var(--radius);
-  border: none;
-  background: var(--color-primary);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  margin-top: 10px;
-}
-
-section form button:hover {
-  background: var(--color-primary-dark);
-}
-
-/* Profile image container */
-section form img {
-  align-self: center;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--color-primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  margin-bottom: 20px;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  section form {
-    padding: 16px;
-  }
-
-  section form button {
-    width: 100%;
-  }
-}
-
-
-/* Secondary button style */
 button[data-variant="success"] {
   background: var(--color-success);
 }
-
 button[data-variant="success"]:hover {
   background: var(--color-success-dark);
 }
 
-/* ===== LOGIN PAGE ===== */
+/* ===== INPUTS ===== */
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-text);
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+input::placeholder { color: var(--color-muted); }
+input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* ===== APP LAYOUT ===== */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+main { padding: 80px var(--space) var(--space); width: 100%; }
+
+/* ===== HEADER ===== */
+header {
+  position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; z-index: 1000;
+  box-shadow: var(--shadow-light);
+}
+header button { background: var(--color-primary); }
+
+/* ===== DASHBOARD ===== */
+.dashboard {
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.dashboard > section:first-child { flex: 1 1 320px; }
+.dashboard > section:last-child { flex: 2 1 480px; }
+
+/* ===== CARDS ===== */
+section > div {
+  border: 1px solid var(--color-border);
+  margin-bottom: 12px;
+  cursor: pointer;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-light);
+  transition: all 0.2s ease-in-out;
+}
+section > div:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
+}
+
+/* ===== FORMS ===== */
+section form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-heavy);
+  transition: all 0.2s ease-in-out;
+}
+section form > div { display: flex; flex-direction: column; gap: 8px; min-width: 200px; }
+section form label { font-size: 13px; font-weight: 600; color: var(--color-muted); }
+section form button { margin-top: 12px; }
+section form img {
+  align-self: center;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-light);
+  margin-bottom: 16px;
+}
+section form img:hover { transform: scale(1.03); box-shadow: var(--shadow-heavy); }
+
+/* ===== LOGIN ===== */
 .login {
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; justify-content: center; align-items: center;
   padding: 20px;
 }
-
 .login form {
-  width: 100%;
-  max-width: 350px;
+  width: 100%; max-width: 400px;
   background: var(--color-surface);
-  padding: 20px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding: 24px; border-radius: var(--radius);
+  box-shadow: var(--shadow-heavy);
+  display: flex; flex-direction: column; gap: 16px;
 }
 
-.login input {
-  width: 100%;
+/* ===== FLEX & GRID ===== */
+body > div { display: flex; gap: var(--space); flex-wrap: wrap; }
+body > div > div { flex: 1 1 300px; }
+div:has(input) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space);
 }
 
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  header {
-    height: 55px;
-    padding: 0 10px;
-  }
-
-  main {
-    padding: 70px 10px 10px;
-  }
-
-  .dashboard {
-    flex-direction: column;
-  }
-
-  .dashboard > section:first-child,
-  .dashboard > section:last-child {
-    flex: 1 1 100%;
-  }
-
-  button {
-    width: 100%;
-  }
-
-  form {
-    max-width: 100%;
-  }
+  body { padding: 10px; }
+  button, section form button { width: 100%; }
+  .dashboard { flex-direction: column; }
+  .dashboard > section:first-child, .dashboard > section:last-child { flex: 1 1 100%; }
+  section form { padding: 16px; }
 }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5f5; border-radius: 10px; }

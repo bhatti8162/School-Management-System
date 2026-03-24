@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 
 export default function StudentList({ students, selected, onSelect, onImport, authToken }) {
   const fileInputRef = useRef();
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   const fetchWithAuth = (url, options = {}) => {
     const opts = {
@@ -66,48 +67,66 @@ export default function StudentList({ students, selected, onSelect, onImport, au
     }
   };
 
+  const filteredStudents = useMemo(() => {
+    const lower = search.toLowerCase();
+    return students.filter(
+      (s) =>
+        s.name.toLowerCase().includes(lower) ||
+        String(s.GR_Id).toLowerCase().includes(lower)
+    );
+  }, [search, students]);
+
   return (
-    <section>
-      <h2>Students</h2>
+    <section className="student-section">
+      <h2>Student Directory</h2>
 
       {/* Buttons */}
-      <div style={{ marginBottom: "10px", display: "flex", gap: "10px" }}>
-        <button onClick={handleExport} disabled={loading}>
+      <div className="button-group">
+        <button
+          onClick={handleExport}
+          disabled={loading}
+          className="button button-export"
+        >
           {loading ? "Processing..." : "Export CSV"}
         </button>
-        <button onClick={handleImportClick} disabled={loading}>
+        <button
+          onClick={handleImportClick}
+          disabled={loading}
+          className="button button-import"
+        >
           {loading ? "Processing..." : "Import CSV"}
         </button>
         <input
           type="file"
           ref={fileInputRef}
-          style={{ display: "none" }}
           accept=".csv"
+          style={{ display: "none" }}
           onChange={handleFileChange}
         />
       </div>
 
-      {/* Student list */}
-      {students.map((s) => (
-        <div
-          key={s.GR_Id}
-          onClick={() => onSelect(s)}
-          style={{
-            border:
-              selected?.GR_Id === s.GR_Id
-                ? "2px solid var(--color-primary)"
-                : "1px solid var(--color-border)",
-            padding: "10px",
-            marginBottom: "5px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            background:
-              selected?.GR_Id === s.GR_Id ? "#eff6ff" : "var(--color-surface)",
-          }}
-        >
-           {s.name} - ({s.GR_Id})
-        </div>
-      ))}
+      {/* Search */}
+      <input
+        type="text"
+        placeholder="Search by name or GR_Id..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="student-search"
+      />
+
+      {/* Student Grid */}
+      <div className="student-grid">
+        {filteredStudents.map((s) => (
+          <div
+            key={s.GR_Id}
+            onClick={() => onSelect(s)}
+            className={`student-card ${selected?.GR_Id === s.GR_Id ? "selected" : ""}`}
+          >
+            <h3>{s.name}</h3>
+            <p>GR_Id: {s.GR_Id}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

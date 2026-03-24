@@ -19,9 +19,9 @@ class Student(models.Model):
         ("withdrawn", "Withdrawn"),
     ]
 
-    GR_Id = models.CharField(max_length=50, unique=True)
-    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name="students", blank=True, null=True)
-    parent_guardian = models.ForeignKey(
+    GR_Id = models.CharField(max_length=50, primary_key=True)
+    school_id = models.ForeignKey(School, on_delete=models.CASCADE, related_name="students", blank=True, null=True)
+    family_id = models.ForeignKey(
         ParentGuardian,
         on_delete=models.SET_NULL,
         null=True,
@@ -41,7 +41,7 @@ class Student(models.Model):
     state = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
-    admission_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    admission_number = models.CharField(max_length=50, blank=True, null=True)
     admission_date = models.DateField(blank=True, null=True)
     previous_school = models.CharField(max_length=100, blank=True, null=True)
     transfer_certificate = models.FileField(upload_to='admissions/tc/', blank=True, null=True)

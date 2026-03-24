@@ -3,7 +3,7 @@ from .school import School
 
 
 class ParentGuardian(models.Model):
-    family_id = models.CharField(max_length=100, blank=True, null=True)
+    family_id = models.CharField(max_length=100, primary_key=True)
     school = models.ForeignKey(
         School,
         on_delete=models.SET_NULL,
@@ -24,4 +24,4 @@ class ParentGuardian(models.Model):
     emergency_contact = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
-        return f" {self.family_id} | {self.father_name} / {self.mother_name}"
+        return f"{self.family_id}"
