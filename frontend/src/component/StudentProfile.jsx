@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaEdit } from "react-icons/fa";
+import html2pdf from "html2pdf.js";
 
 export default function StudentProfile({
   form: initialForm,
@@ -10,98 +11,142 @@ export default function StudentProfile({
   const [form, setForm] = useState(initialForm || {});
   const [preview, setPreview] = useState(null);
   const fileInputRef = useRef();
+  const profileRef = useRef();
+  const fileRef = useRef(null); // store file temporarily
 
   useEffect(() => {
     setForm(initialForm || {});
     setPreview(null);
+    fileRef.current = null;
   }, [initialForm]);
 
-  // Handle text input
+  // handle text input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     handleChangeParent?.(name, value);
   };
 
-  // Handle image selection
+  // handle image selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setForm((prev) => ({ ...prev, photograph: file }));
+    fileRef.current = file; // store for FormData upload
     setPreview(URL.createObjectURL(file));
   };
 
-  // Update API
+  // PATCH update
   const handleUpdate = async () => {
     const token =
       localStorage.getItem("access") ||
       localStorage.getItem("access_token") ||
       localStorage.getItem("jwt");
-
     if (!token) return alert("Login required.");
 
     const formData = new FormData();
 
+    // append all non-file fields
     Object.keys(form).forEach((key) => {
-      let value = form[key];
-
-      if (value === "N/A" || value === "") value = null;
-
-      if (value !== null && value !== undefined) {
+      if (["photograph", "transfer_certificate"].includes(key)) return; // skip file fields
+      const value = form[key];
+      if (value !== undefined && value !== null && value !== "") {
         formData.append(key, value);
       }
     });
+
+    // append photograph if selected
+    if (fileRef.current) {
+      formData.append("photograph", fileRef.current);
+    }
 
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/students/${form.GR_Id}/`,
         {
-          method: "PATCH", // safer for file uploads
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
+            // do NOT set Content-Type manually for FormData
           },
           body: formData,
         }
       );
 
-      const data = await response.json();
-
       if (!response.ok) {
-        console.error(data);
+        const data = await response.json().catch(() => ({}));
+        console.error("PATCH error:", data);
         alert(`Update failed: ${response.status}`);
-      } else {
-        alert("Student updated successfully!");
-        handleChangeParent?.("updated", true);
+        return;
       }
+
+      alert("Student updated successfully!");
+      handleChangeParent?.("updated", true);
+      fileRef.current = null;
     } catch (error) {
-      console.error("PUT failed:", error);
+      console.error("PATCH failed:", error);
       alert("Update failed.");
     }
   };
 
+  // Export PDF
+  const handleExportPDF = () => {
+    if (!profileRef.current) return;
+
+    const clone = profileRef.current.cloneNode(true);
+
+    // remove buttons
+    clone.querySelectorAll("button").forEach((btn) => btn.remove());
+
+    // replace inputs with spans
+    clone.querySelectorAll("input").forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = input.value;
+      span.style.display = "block";
+      span.style.fontFamily = "inherit";
+      span.style.padding = "4px 0";
+      input.parentNode.replaceChild(span, input);
+    });
+
+    const opt = {
+      margin: 0.3,
+      filename: `student_${form.GR_Id || "profile"}.pdf`,
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf().set(opt).from(clone).save();
+  };
+
   return (
-    <section className="student-profile-section">
+    <section className="student-profile-section" ref={profileRef}>
       <button className="student-profile-button" onClick={onBack}>
         ← Back
+      </button>
+
+      <button
+        onClick={handleExportPDF}
+        style={{ marginLeft: "10px" }}
+        className="btn-primary"
+      >
+        Export PDF
       </button>
 
       <h2 className="student-profile-title">Student Profile</h2>
 
       <form className="student-profile-form">
-        {/* Image Section */}
         <div className="student-profile-image-wrapper">
           <img
             src={
               preview
                 ? preview
-                : selected?.photograph || "https://via.placeholder.com/150"
+                : form.photograph || selected?.photograph || "https://via.placeholder.com/150"
             }
             alt="student"
             className="student-profile-img"
           />
 
-          {/* Edit Icon */}
           <button
             type="button"
             className="edit-icon-btn"
@@ -110,7 +155,6 @@ export default function StudentProfile({
             <FaEdit />
           </button>
 
-          {/* Hidden File Input */}
           <input
             type="file"
             accept="image/*"
@@ -120,10 +164,9 @@ export default function StudentProfile({
           />
         </div>
 
-        {/* Fields */}
         <div className="student-profile-fields">
           {Object.keys(form).map((key) =>
-            key === "photograph" || key === "transfer_certificate" ? null : (
+            ["photograph", "transfer_certificate"].includes(key) ? null : (
               <div className="student-profile-field" key={key}>
                 <label className="student-profile-label">
                   {key.replace(/_/g, " ").toUpperCase()}
@@ -141,7 +184,6 @@ export default function StudentProfile({
           )}
         </div>
 
-        {/* Actions */}
         <div className="student-profile-actions">
           <button
             type="button"
