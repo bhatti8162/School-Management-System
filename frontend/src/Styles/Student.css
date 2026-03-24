@@ -254,3 +254,44 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+
+
+
+.student-profile-image-wrapper {
+  position: relative;
+  width: 190px;
+  margin-bottom: 20px;
+  align-self: center;
+}
+
+.student-profile-img {
+  width: 170px;
+  height: 190px;
+  object-fit: fill;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+}
+
+/* Edit icon */
+.edit-icon-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.student-profile-image-wrapper:hover .edit-icon-btn {
+  opacity: 1;
+}
+
+.edit-icon-btn:hover {
+  background: #333;
+}
