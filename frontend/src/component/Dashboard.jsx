@@ -106,12 +106,12 @@ export default function Dashboard() {
   const handleSelect = (student) => {
     setSelected(student);
     setForm(student);
-    setView("profile");
+    setView("profile"); // switch view
   };
 
   const handleBack = () => {
     setSelected(null);
-    setView("list");
+    setView("list"); // go back to list
   };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -127,6 +127,7 @@ export default function Dashboard() {
       });
       refreshStudents();
       setView("list");
+      setSelected(null);
     } catch (err) {
       console.error("Update failed:", err);
     }
@@ -151,9 +152,9 @@ export default function Dashboard() {
             <StudentList
               students={students}
               selected={selected}
-              onSelect={setSelected}
+              onSelect={handleSelect} // use handleSelect to switch view
               onImport={refreshStudents}
-              authToken={token} // pass token to StudentList
+              authToken={token}
             />
           )}
           {view === "profile" && selected && (

@@ -105,7 +105,7 @@ export default function StudentList({ students, selected, onSelect, onImport, au
               selected?.GR_Id === s.GR_Id ? "#eff6ff" : "var(--color-surface)",
           }}
         >
-          {s.name} ({s.admission_number})
+           {s.name} - ({s.GR_Id})
         </div>
       ))}
     </section>

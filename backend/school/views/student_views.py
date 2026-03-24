@@ -1,15 +1,15 @@
-import csv
-import io
+import csv, io
 from datetime import datetime
-from .base import *
-
-from ..models import School, Student, ParentGuardian, Teacher, Result, Fee
-from ..serializers import StudentSerializer
+from django.db import transaction
+from django.http import HttpResponse
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
+
+from .base import *
+from ..models import School, Student, ParentGuardian
+from ..serializers import StudentSerializer
 
 
 class StudentViewSet(ModelViewSet):
@@ -18,133 +18,159 @@ class StudentViewSet(ModelViewSet):
     lookup_field = "GR_Id"
 
     def get_queryset(self):
-        user_school = self.request.user.profile.school
-        return Student.objects.filter(school=user_school)
+        return Student.objects.filter(school=self.request.user.profile.school)
 
+    # ---------- HELPERS ---------- #
+
+    def clean_text(self, v):
+        return str(v).strip() if v and str(v).strip() else None
+
+    def clean_int(self, v, errors, row, field):
+        try:
+            return int(v) if v else None
+        except:
+            errors.append(f"Row {row}: Invalid {field}")
+            return None
+
+    def parse_date(self, v, errors, row, field):
+        try:
+            return datetime.strptime(v.strip(), '%m/%d/%Y').date() if v else None
+        except:
+            errors.append(f"Row {row}: Invalid {field}")
+            return None
+
+    # ---------- IMPORT ---------- #
     @action(detail=False, methods=['post'])
     def import_csv(self, request):
         file = request.FILES.get('file')
         if not file:
+            print("[ERROR] No file uploaded")
             return Response({"error": "No file uploaded"}, status=400)
 
-        decoded_file = io.TextIOWrapper(file.file, encoding='utf-8')
-        reader = csv.DictReader(decoded_file)  # comma-separated CSV
+        print("[INFO] CSV import started")
 
-        created_count = 0
-        updated_count = 0
-        errors = []
+        reader = csv.DictReader(io.TextIOWrapper(file.file, encoding='utf-8'))
 
-        for row_number, row in enumerate(reader, start=1):
-            # Skip empty rows
+        errors, to_create, to_update = [], [], []
+        existing = {s.GR_Id: s for s in Student.objects.all()}
+
+        print(f"[INFO] Existing students loaded: {len(existing)}")
+
+        for i, row in enumerate(reader, 1):
+            print(f"\n[ROW {i}] Raw data: {row}")
+
             if not any(row.values()):
-                print(f"[DEBUG] Skipping empty row {row_number}")
+                print(f"[ROW {i}] Skipped (empty row)")
                 continue
 
             try:
-                print(f"[DEBUG] Processing row {row_number}: {row}")
+                gr_id = self.clean_text(row.get('GR_Id'))
+                school_id = self.clean_text(row.get('school'))
 
-                # Lookup school
-                school_instance = None
-                if row.get('school'):
-                    try:
-                        school_instance = School.objects.get(id=row['school'])
-                    except School.DoesNotExist:
-                        errors.append(f"Row {row_number}: School id={row.get('school')} not found")
-                        continue
-                else:
-                    errors.append(f"Row {row_number}: Missing school id")
+                print(f"[ROW {i}] GR_Id: {gr_id}, School: {school_id}")
+
+                if not gr_id or not school_id:
+                    msg = f"Row {i}: Missing GR_Id or school"
+                    print(f"[ROW {i}] ERROR: {msg}")
+                    errors.append(msg)
                     continue
 
-                # Lookup parent (optional)
-                parent_instance = None
-                if row.get('parent_guardian'):
-                    try:
-                        parent_instance = ParentGuardian.objects.get(id=row['parent_guardian'])
-                    except ParentGuardian.DoesNotExist:
-                        errors.append(f"Row {row_number}: Parent id={row.get('parent_guardian')} not found")
-                        parent_instance = None
+                school = School.objects.filter(id=school_id).first()
+                if not school:
+                    msg = f"Row {i}: Invalid school id={school_id}"
+                    print(f"[ROW {i}] ERROR: {msg}")
+                    errors.append(msg)
+                    continue
 
-                # Parse dates to YYYY-MM-DD
-                date_of_birth = None
-                admission_date = None
-                dob_str = row.get('date_of_birth', '').replace('“','').replace('”','')
-                admission_str = row.get('admission_date', '').replace('“','').replace('”','')
+                parent_id = self.clean_text(row.get('parent_guardian'))
+                parent = ParentGuardian.objects.filter(id=parent_id).first() if parent_id else None
+                print(f"[ROW {i}] Parent: {parent_id} -> {parent}")
 
-                if dob_str:
-                    try:
-                        date_of_birth = datetime.strptime(dob_str, '%m/%d/%Y').date()
-                    except Exception as e:
-                        errors.append(f"Row {row_number}: Invalid date_of_birth '{dob_str}'")
-                        date_of_birth = None
+                # Dates (DOB and admission can now be None)
+                dob = self.parse_date(row.get('date_of_birth'), errors, i, 'date_of_birth')
+                if not dob:
+                    print(f"[ROW {i}] WARNING: Missing DOB → saving as None")
+                admission_date = self.parse_date(row.get('admission_date'), errors, i, 'admission_date')
+                if not admission_date:
+                    print(f"[ROW {i}] INFO: Missing admission_date → saving as None")
 
-                if admission_str:
-                    try:
-                        admission_date = datetime.strptime(admission_str, '%m/%d/%Y').date()
-                    except Exception as e:
-                        errors.append(f"Row {row_number}: Invalid admission_date '{admission_str}'")
-                        admission_date = None
+                data = {
+                    'school': school,
+                    'parent_guardian': parent,
+                    'name': self.clean_text(row.get('name')),
+                    'gender': self.clean_text(row.get('gender')),
+                    'date_of_birth': dob,
+                    'age': self.clean_int(row.get('age'), errors, i, 'age'),
+                    'blood_group': self.clean_text(row.get('blood_group')),
+                    'nationality': self.clean_text(row.get('nationality')),
+                    'religion': self.clean_text(row.get('religion')),
+                    'address': self.clean_text(row.get('address')),
+                    'city': self.clean_text(row.get('city')),
+                    'state': self.clean_text(row.get('state')),
+                    'country': self.clean_text(row.get('country')),
+                    'postal_code': self.clean_text(row.get('postal_code')),
+                    'admission_number': self.clean_text(row.get('admission_number')),
+                    'admission_date': admission_date,
+                    'previous_school': self.clean_text(row.get('previous_school')),
+                    'admission_class': self.clean_text(row.get('admission_class')),
+                    'section': self.clean_text(row.get('section')),
+                    'academic_year': self.clean_text(row.get('academic_year')),
+                    'admission_status': self.clean_text(row.get('admission_status')),
+                }
 
-                # Update or create student
-                student, created = Student.objects.update_or_create(
-                    GR_Id=row['GR_Id'],
-                    defaults={
-                        'school': school_instance,
-                        'parent_guardian': parent_instance,
-                        'name': row.get('name', ''),
-                        'gender': row.get('gender', ''),
-                        'date_of_birth': date_of_birth,
-                        'age': row.get('age') or None,
-                        'photograph': row.get('photograph', ''),
-                        'blood_group': row.get('blood_group', ''),
-                        'nationality': row.get('nationality', ''),
-                        'religion': row.get('religion', ''),
-                        'address': row.get('address', ''),
-                        'city': row.get('city', ''),
-                        'state': row.get('state', ''),
-                        'country': row.get('country', ''),
-                        'postal_code': row.get('postal_code', ''),
-                        'admission_number': row.get('admission_number', ''),
-                        'admission_date': admission_date,
-                        'previous_school': row.get('previous_school', ''),
-                        'transfer_certificate': row.get('transfer_certificate', ''),
-                        'admission_class': row.get('admission_class', ''),
-                        'section': row.get('section', ''),
-                        'academic_year': row.get('academic_year', ''),
-                        'admission_status': row.get('admission_status', ''),
-                    }
-                )
+                print(f"[ROW {i}] Cleaned data: {data}")
 
-                if created:
-                    created_count += 1
-                    print(f"[DEBUG] Created student {student.GR_Id}")
+                if gr_id in existing:
+                    print(f"[ROW {i}] Updating existing student")
+                    student = existing[gr_id]
+                    for k, v in data.items():
+                        setattr(student, k, v)
+                    to_update.append(student)
                 else:
-                    updated_count += 1
-                    print(f"[DEBUG] Updated student {student.GR_Id}")
+                    print(f"[ROW {i}] Creating new student")
+                    to_create.append(Student(GR_Id=gr_id, **data))
 
             except Exception as e:
-                error_msg = f"Row {row_number}, GR_Id={row.get('GR_Id')}: {e}"
-                errors.append(error_msg)
-                print(f"[ERROR] {error_msg}")
+                msg = f"Row {i}: {str(e)}"
+                print(f"[ROW {i}] EXCEPTION: {msg}")
+                errors.append(msg)
+
+        print("\n[INFO] Processing complete")
+        print(f"[INFO] To Create: {len(to_create)}")
+        print(f"[INFO] To Update: {len(to_update)}")
+        print(f"[INFO] Errors: {len(errors)}")
+
+        # ---------------- SAVE ---------------- #
+        with transaction.atomic():
+            if to_create:
+                Student.objects.bulk_create(to_create)
+                print(f"[DB] Created {len(to_create)} students")
+            if to_update:
+                Student.objects.bulk_update(to_update, fields=list(data.keys()))
+                print(f"[DB] Updated {len(to_update)} students")
+
+        total_students = Student.objects.count()
+        print(f"[DB] Total students in DB: {total_students}")
 
         return Response({
-            "created": created_count,
-            "updated": updated_count,
+            "created": len(to_create),
+            "updated": len(to_update),
             "errors": errors
         })
+
+    # ---------- EXPORT ---------- #
 
     @action(detail=False, methods=["GET"])
     def export_csv(self, request):
         students = self.get_queryset()
-
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="students.csv"'
 
         writer = csv.writer(response)
-        field_names = [field.name for field in students.model._meta.fields]
-        writer.writerow(field_names)
+        fields = [f.name for f in students.model._meta.fields]
+        writer.writerow(fields)
 
         for s in students:
-            row = [getattr(s, field, '') for field in field_names]
-            writer.writerow(row)
+            writer.writerow([getattr(s, f, '') for f in fields])
 
         return response

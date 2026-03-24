@@ -32,6 +32,7 @@ export default function StudentProfile({ form, handleChange, handleUpdate, onBac
               name={key}
               value={form[key] || ""}
               onChange={handleChange}
+              disabled={key === "GR_Id"} // GR_Id is read-only
             />
           </div>
         ))}
