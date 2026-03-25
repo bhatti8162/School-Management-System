@@ -9,4 +9,4 @@ class ParentGuardianViewSet(ModelViewSet):
 
     def get_queryset(self):
         user_school = self.request.user.profile.school
-        return ParentGuardian.objects.filter(school=user_school)
+        return ParentGuardian.objects.filter(school_id=user_school)

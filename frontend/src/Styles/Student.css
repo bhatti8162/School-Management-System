@@ -2,23 +2,16 @@
 
 
 /* ===== RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-body {
-  background: var(--color-bg);
-  color: var(--color-text);
-}
 
 /* ===== SECTION ===== */
 .student-section {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 900px;
+  margin: 10px auto; /* reduced margin */
+  padding: 16px; /* slightly smaller padding */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
 }
 
 .student-section h2 {
@@ -392,3 +385,47 @@ body {
   border-radius: 6px;
 }
 
+/* Buttons */
+.btn-primary {
+  background: #1f2937;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Bottom */
+.student-profile-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Hide in PDF */
+.no-print {
+  display: block;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .student-profile-section {
+    background: white;
+    padding: 0;
+  }
+
+  .student-profile-card {
+    box-shadow: none;
+    border-radius: 0;
+  }
+}

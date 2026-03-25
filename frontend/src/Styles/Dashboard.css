@@ -1,0 +1,95 @@
+/* ===== DASHBOARD LAYOUT ===== */
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 80px; /* space for sticky header */
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Dashboard sections (sidebar / main content) */
+.dashboard > section:first-child {
+  flex: 1 1 300px; /* sidebar-ish width */
+}
+.dashboard > section:last-child {
+  flex: 2 1 600px; /* main content wider */
+}
+
+/* ===== DASHBOARD CARDS (Old Box Style) ===== */
+.dashboard-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: var(--radius, 8px);
+  box-shadow: var(--shadow-light, 0 1px 4px rgba(0,0,0,0.1));
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+  border-color: var(--color-primary, #4f46e5);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-heavy, 0 4px 12px rgba(0,0,0,0.15));
+}
+
+/* Card header */
+.dashboard-card h3 {
+  font-size: 1.2rem;
+  color: var(--color-primary, #4f46e5);
+  margin-bottom: 8px;
+}
+
+/* Card text / description */
+.dashboard-card p {
+  font-size: 0.95rem;
+  color: var(--color-muted, #6b7280);
+  line-height: 1.4;
+}
+
+/* Card actions */
+.dashboard-card .card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Buttons inside cards */
+.dashboard-card button {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--color-primary, #4f46e5);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dashboard-card button:hover {
+  background: var(--color-primary-dark, #4338ca);
+}
+
+/* ===== GRID CARDS ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    margin-top: 60px;
+  }
+  .dashboard > section:first-child,
+  .dashboard > section:last-child {
+    flex: 1 1 100%;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

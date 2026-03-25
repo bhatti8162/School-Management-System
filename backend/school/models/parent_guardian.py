@@ -4,7 +4,7 @@ from .school import School
 
 class ParentGuardian(models.Model):
     family_id = models.CharField(max_length=100, primary_key=True)
-    school = models.ForeignKey(
+    school_id = models.ForeignKey(
         School,
         on_delete=models.SET_NULL,
         related_name="parents",

@@ -1,0 +1,82 @@
+/* FamilyProfile.css */
+
+/* Section container */
+.family-profile-section {
+  max-width: 900px;
+  margin: 10px auto; /* reduced margin */
+  padding: 16px; /* slightly smaller padding */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Top buttons container */
+.family-profile-actions-top {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 10px; /* reduced from 15px */
+  gap: 10px; /* space between back and export buttons */
+}
+
+
+
+/* Title */
+.family-profile-title {
+  text-align: center;
+  font-size: 22px; /* slightly smaller */
+  margin-bottom: 16px; /* reduced from 20px */
+  color: #111827; /* dark gray */
+}
+
+/* Form container */
+.family-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* reduce overall form gap */
+}
+
+/* Form fields wrapper */
+.family-profile-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* smaller min width */
+  gap: 10px; /* tighter grid */
+}
+
+/* Individual field */
+.family-profile-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label */
+.family-profile-label {
+  font-weight: 600;
+  font-size: 12px; /* slightly smaller label */
+  margin-bottom: 4px; /* tighter spacing */
+  color: #374151; /* gray-700 */
+}
+
+/* Input */
+.family-profile-input {
+  padding: 6px 8px; /* tighter padding */
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 6px;
+  font-size: 13px; /* smaller font */
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.family-profile-input:focus {
+  border-color: #2563eb;
+}
+
+/* Bottom save button container */
+.family-profile-actions {
+  margin-top: 16px; /* slightly smaller margin */
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+}

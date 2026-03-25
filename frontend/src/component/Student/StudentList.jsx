@@ -77,32 +77,33 @@ export default function StudentList({ students, selected, onSelect, onImport, au
   }, [search, students]);
 
   return (
-    <section className="student-section">
-      <h2>Student Directory</h2>
-
-      {/* Buttons */}
-      <div className="button-group">
-        <button
-          onClick={handleExport}
-          disabled={loading}
-          className="button button-export"
-        >
-          {loading ? "Processing..." : "Export CSV"}
-        </button>
-        <button
-          onClick={handleImportClick}
-          disabled={loading}
-          className="button button-import"
-        >
-          {loading ? "Processing..." : "Import CSV"}
-        </button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          accept=".csv"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
+    <section className="list-container student-section">
+      {/* Header */}
+      <div className="list-header">
+        <h2>Student Directory</h2>
+        <div className="actions button-group">
+          <button
+            onClick={handleExport}
+            disabled={loading}
+            className="button button-export"
+          >
+            {loading ? "Processing..." : "Export CSV"}
+          </button>
+          <button
+            onClick={handleImportClick}
+            disabled={loading}
+            className="button button-import"
+          >
+            {loading ? "Processing..." : "Import CSV"}
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept=".csv"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+        </div>
       </div>
 
       {/* Search */}
@@ -111,19 +112,21 @@ export default function StudentList({ students, selected, onSelect, onImport, au
         placeholder="Search by name or GR_Id..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="student-search"
+        className="student-search list-search"
       />
 
       {/* Student Grid */}
-      <div className="student-grid">
+      <div className="dashboard-grid student-grid">
         {filteredStudents.map((s) => (
           <div
             key={s.GR_Id}
             onClick={() => onSelect(s)}
-            className={`student-card ${selected?.GR_Id === s.GR_Id ? "selected" : ""}`}
+            className={`dashboard-card student-card ${selected?.GR_Id === s.GR_Id ? "selected" : ""}`}
           >
-            <h3>{s.name}</h3>
-            <p>GR_Id: {s.GR_Id}</p>
+            <div className="item-left">
+              <h3>{s.name}</h3>
+              <p>GR_Id: {s.GR_Id}</p>
+            </div>
           </div>
         ))}
       </div>

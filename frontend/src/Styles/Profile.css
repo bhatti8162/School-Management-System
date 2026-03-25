@@ -1,0 +1,362 @@
+/* ===== ROOT THEME COLORS ===== */
+
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* ===== SECTION ===== */
+.profile-section {
+  max-width: 900px;
+  margin: 10px auto;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.profile-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+}
+
+/* ===== BUTTONS ===== */
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  padding: 0.65rem 1.8rem;
+  border-radius: var(--radius, 8px);
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  border: none;
+  box-shadow: var(--shadow-light, 0 4px 12px rgba(0,0,0,0.05));
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-export {
+  background: var(--color-primary, #4f46e5);
+  color: white;
+}
+
+.button-export:hover {
+  background: #6B40E0;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy, 0 8px 24px rgba(0,0,0,0.15));
+}
+
+.button-import {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-primary, #4f46e5);
+  color: var(--color-primary, #4f46e5);
+}
+
+.button-import:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy, 0 8px 24px rgba(0,0,0,0.15));
+}
+
+/* ===== SEARCH BOX ===== */
+.profile-search {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  border: 1px solid var(--color-border, #ddd);
+  background: var(--color-surface, #f5f7fa);
+  color: var(--color-text, #333);
+  margin-bottom: 2rem;
+  transition: all 0.25s ease-in-out;
+}
+
+.profile-search::placeholder {
+  color: var(--color-muted, #888);
+}
+
+.profile-search:focus {
+  outline: none;
+  border-color: var(--color-primary, #4f46e5);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* ===== PROFILE GRID ===== */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.profile-card {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius, 12px);
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: var(--shadow-light, 0 4px 12px rgba(0,0,0,0.05));
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #ddd);
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-heavy, 0 8px 24px rgba(0,0,0,0.1));
+}
+
+.profile-card.selected {
+  border: 2px solid var(--color-primary, #4f46e5);
+  background: #F0F4FF;
+}
+
+.profile-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.profile-card p {
+  font-size: 0.95rem;
+  color: var(--color-muted, #888);
+}
+
+/* ===== PROFILE DETAILS / FORM ===== */
+.profile-details-section {
+  padding: 20px;
+  background: #f5f7fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.profile-topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.profile-card-inner {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 900px;
+  margin: auto;
+}
+
+.profile-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--color-primary, #4f46e5);
+  font-size: clamp(18px, 2.5vw, 24px);
+}
+
+
+/* Grid fields */
+.profile-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+}
+
+.profile-field input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-field input:focus {
+  border-color: var(--color-primary, #4f46e5);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--color-primary, #4f46e5);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Bottom actions */
+.profile-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .profile-search {
+    font-size: 0.95rem;
+  }
+
+  .profile-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .profile-card p {
+    font-size: 0.85rem;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+.no-print {
+  display: block;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .profile-section {
+    background: white;
+    padding: 0;
+  }
+
+  .profile-card-inner {
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
+
+
+
+
+/* ===== PROFILE IMAGE WITH EDIT ICON RESPONSIVE ===== */
+.profile-image-section {
+  display: flex;
+  justify-content: center; /* center image horizontally */
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+}
+
+/* Profile image */
+.profile-img {
+  width: 180px;
+  height: 190px;
+  object-fit: fill;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary, #4f46e5);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Hover scale effect */
+.profile-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+/* Edit icon overlay (modern, centered on image top) */
+.edit-icon-btn {
+  position: absolute;
+  top: 10px;   /* near top */
+  right: 10px; /* stays at top-right */
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Show edit icon on hover */
+.profile-image-section:hover .edit-icon-btn {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Hover effect for icon */
+.edit-icon-btn:hover {
+  background: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .profile-img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .edit-icon-btn {
+    padding: 7px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-img {
+    width: 130px;
+    height: 130px;
+  }
+
+  .edit-icon-btn {
+    padding: 6px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-img {
+    width: 110px;
+    height: 110px;
+  }
+
+  .edit-icon-btn {
+    padding: 5px;
+    font-size: 11px;
+  }
+}
