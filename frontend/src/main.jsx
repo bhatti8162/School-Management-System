@@ -4,6 +4,7 @@ import './Styles/App.css'
 import './Styles/Dashboard.css'
 import './Styles/Profile.css'
 import './Styles/List.css'
+import './Styles/Form.css'
 // import './Styles/Family.css'
 import App from './App.jsx'
 

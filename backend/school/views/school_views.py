@@ -1,6 +1,8 @@
+
+
 from .base import *
 from ..models.school import School
-from ..serializers import SchoolSerializer
+from ..serializers import SchoolSerializer, SchoolIDSerializer
 
 class SchoolViewSet(ModelViewSet):
     serializer_class = SchoolSerializer
@@ -14,7 +16,7 @@ class SchoolViewSet(ModelViewSet):
             return School.objects.all()
 
         if profile.role == "school" and profile.school:
-            return School.objects.filter(id=profile.school.id)
+            return School.objects.filter(school_id=profile.school)
 
         return School.objects.none()
 
@@ -31,3 +33,20 @@ class SchoolViewSet(ModelViewSet):
             serializer = self.get_serializer(profile.school)
 
         return Response(serializer.data)
+    
+
+class SchoolIDViewSet(ModelViewSet):
+    serializer_class = SchoolIDSerializer
+    permission_classes = [IsAuthenticated, IsSuperAdminOrAssignedSchoolUser]
+
+    def get_queryset(self):
+        user = self.request.user
+        profile = user.profile
+
+        if profile.role == "superadmin":
+            return School.objects.all()
+
+        if profile.role == "school" and profile.school:
+            return School.objects.filter(school_id=profile.school)
+
+        return School.objects.none()

@@ -6,3 +6,8 @@ class SchoolSerializer(BaseSerializer):
         model = School
         fields = '__all__'
         lookup_field = 'school_id'
+
+class SchoolIDSerializer(BaseSerializer):
+    class Meta:
+        model = School
+        fields = ['school_id']

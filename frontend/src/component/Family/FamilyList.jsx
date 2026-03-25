@@ -1,9 +1,13 @@
 import React, { useRef, useState, useMemo } from "react";
+import { FaPlus } from "react-icons/fa"; // plus icon
+import FamilyProfile from "./FamilyProfile"; // your existing family form component
 
 export default function FamilyList({ families, selected, onSelect, onImport, authToken }) {
   const fileInputRef = useRef();
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [showForm, setShowForm] = useState(false); // toggle for new family form
+  const [newFamily, setNewFamily] = useState(null); // store new family data temporarily
 
   // --- Auth fetch helper ---
   const fetchWithAuth = (url, options = {}) => {
@@ -18,8 +22,6 @@ export default function FamilyList({ families, selected, onSelect, onImport, aut
     return fetch(url, opts);
   };
 
-  
-
   // --- Search filtering ---
   const filteredFamilies = useMemo(() => {
     const lower = search.toLowerCase();
@@ -31,12 +33,40 @@ export default function FamilyList({ families, selected, onSelect, onImport, aut
     );
   }, [search, families]);
 
+  // --- Handle creating new family ---
+  const handleAddFamily = () => {
+    setNewFamily({});
+    setShowForm(true);
+  };
+
+  const handleFormSubmit = async (formData) => {
+    try {
+      setLoading(true);
+      const res = await fetchWithAuth("/api/families/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error("Failed to add family");
+      const savedFamily = await res.json();
+      onImport && onImport(savedFamily); // update parent list
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
+      alert("Error adding family");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="list-container family-section">
       {/* Header */}
       <div className="list-header">
         <h2 className="list-title">Family Directory</h2>
-
+        <button className="add-family-btn" onClick={handleAddFamily}>
+          <FaPlus /> Add Family
+        </button>
       </div>
 
       {/* Search */}
@@ -66,6 +96,17 @@ export default function FamilyList({ families, selected, onSelect, onImport, aut
         ))}
         {filteredFamilies.length === 0 && <p className="no-results">No families found.</p>}
       </div>
+
+      {/* New Family Form Modal */}
+      {showForm && (
+        <FamilyProfile
+          form={newFamily}
+          handleChangeParent={(updatedForm) => setNewFamily(updatedForm)}
+          handleUpdateParent={handleFormSubmit}
+          onBack={() => setShowForm(false)}
+          token={authToken}
+        />
+      )}
     </section>
   );
 }

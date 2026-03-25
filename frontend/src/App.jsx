@@ -18,10 +18,15 @@ function App() {
         body: JSON.stringify(credentials),
       });
       const data = await res.json();
+
       if (data.access) {
+        // Save tokens
         localStorage.setItem("access", data.access);
         localStorage.setItem("refresh", data.refresh);
         setToken(data.access);
+
+        // Fetch school_id separately
+        fetchSchoolId(data.access);
       } else {
         alert("Invalid credentials");
       }
@@ -30,9 +35,30 @@ function App() {
     }
   };
 
+  // --- Fetch school_id ---
+  const fetchSchoolId = async (accessToken) => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/school_id/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      });
+      const data = await res.json();
+      if (data[0].school_id) {
+        localStorage.setItem("school_id", data[0].school_id);
+      } else {
+        console.warn("school_id not returned from API");
+      }
+    } catch (err) {
+      console.error("Error fetching school_id:", err);
+    }
+  };
+
   // --- Logout ---
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.clear(); // clears tokens + school_id
     setToken("");
     setModule("students");
   };
@@ -52,6 +78,11 @@ function App() {
       if (data.access) {
         localStorage.setItem("access", data.access);
         setToken(data.access);
+
+        // Optional: refetch school_id if needed
+        if (!localStorage.getItem("school_id")) {
+          fetchSchoolId(data.access);
+        }
       } else {
         handleLogout();
       }

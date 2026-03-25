@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     SchoolViewSet,
+    SchoolIDViewSet,
     StudentViewSet,
     AttendanceViewSet,
     ResultViewSet,
@@ -13,6 +14,7 @@ from .views import (
 
 router = DefaultRouter()
 router.register(r'school', SchoolViewSet, basename='school')
+router.register(r'school_id', SchoolIDViewSet, basename='school_id')
 router.register(r'family', ParentGuardianViewSet, basename='family')
 router.register(r'students', StudentViewSet, basename='student')
 router.register(r'attendance', AttendanceViewSet)

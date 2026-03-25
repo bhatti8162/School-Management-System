@@ -1,4 +1,5 @@
 from .school_serializers import SchoolSerializer
+from .school_serializers import SchoolIDSerializer
 from .parent_guardian_serializers import ParentGuardianSerializer
 from .student_serializers import StudentSerializer
 from .teacher_serializers import TeacherSerializer
